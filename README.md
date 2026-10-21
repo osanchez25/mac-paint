@@ -16,8 +16,8 @@ and offline.
 ## Download
 
 Get the latest `.dmg` from [Releases](https://github.com/osanchez25/mac-paint/releases),
-open it and drag **Paint** to **Applications**. It needs macOS 14 or later on Apple
-silicon.
+open it and drag **Paint** to **Applications**. One download works on Apple silicon
+and Intel Macs, with macOS 14 or later.
 
 The app is not signed with an Apple Developer ID, so macOS blocks it the first time.
 Open **System Settings → Privacy & Security** and click **Open Anyway**, or run:

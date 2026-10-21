@@ -49,7 +49,7 @@ function AboutDialog() {
         <DialogBody>
           <DialogTitle>Paint for Mac</DialogTitle>
           <DialogContent>
-            A Mac version of the Windows 11 Paint app. Version 0.1.0.
+            A Mac version of the Windows 11 Paint app. Version 0.1.1.
           </DialogContent>
           <DialogActions>
             <Button appearance="primary" onClick={close}>OK</Button>

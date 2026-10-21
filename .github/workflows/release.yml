@@ -1,9 +1,11 @@
 name: Release
 
-# Push a tag like v0.2.0 to build Paint.app on a Mac and publish a GitHub Release.
+# Push a tag like v0.2.0 to build Paint.app (Apple silicon + Intel) and publish a
+# GitHub Release. "Run workflow" on the Actions tab builds without publishing.
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,20 +20,41 @@ jobs:
           node-version: 22
           cache: npm
       - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
       - run: npm ci
       - run: npm test
-      - name: Build Paint.app and the .dmg
-        run: npm run tauri build -- --bundles app,dmg
+      - name: Build the Remove background helper for both chips
+        run: ./scripts/build-helper.sh universal-apple-darwin
+      - name: Build the universal Paint.app and .dmg
+        run: npm run tauri build -- --target universal-apple-darwin --bundles app,dmg
+      - name: Check both chips are in the app
+        run: |
+          app=src-tauri/target/universal-apple-darwin/release/bundle/macos/Paint.app/Contents/MacOS
+          for bin in "$app/mac-paint" "$app/remove-bg"; do
+            archs=$(lipo -archs "$bin")
+            echo "$bin: $archs"
+            [[ "$archs" == *x86_64* && "$archs" == *arm64* ]] || { echo "missing an architecture"; exit 1; }
+          done
       - name: Zip the Finder Quick Action
         run: cd macos && zip -r "../Edit-in-Paint-Quick-Action.zip" "Edit in Paint.workflow"
+      - name: Keep the build (manual runs)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v7
+        with:
+          name: paint-universal
+          path: |
+            src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
+            Edit-in-Paint-Quick-Action.zip
       - name: Publish the release
+        if: startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          dmg=$(ls src-tauri/target/release/bundle/dmg/*.dmg)
+          dmg=$(ls src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg)
           gh release create "$GITHUB_REF_NAME" "$dmg" Edit-in-Paint-Quick-Action.zip \
             --title "Paint for Mac $GITHUB_REF_NAME" --generate-notes \
-            --notes "**Install:** open the .dmg and drag Paint to Applications. The app is not signed with an Apple Developer ID, so the first time macOS blocks it: open **System Settings → Privacy & Security** and click **Open Anyway** (or run \`xattr -dr com.apple.quarantine /Applications/Paint.app\`). For the Finder right-click **Edit in Paint**, unzip the Quick Action and double-click it. Requires macOS 14+ on Apple silicon."
+            --notes "**Install:** open the .dmg and drag Paint to Applications. One download works on both Apple silicon and Intel Macs (macOS 14 or later). The app is not signed with an Apple Developer ID, so the first time macOS blocks it: open **System Settings → Privacy & Security** and click **Open Anyway** (or run \`xattr -dr com.apple.quarantine /Applications/Paint.app\`). For the Finder right-click **Edit in Paint**, unzip the Quick Action and double-click it."

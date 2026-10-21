@@ -1,6 +1,6 @@
 [package]
 name = "mac-paint"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Mac app that looks and works like Windows 11 Paint"
 authors = ["Oscar Sanchez"]
 license = "MIT"
