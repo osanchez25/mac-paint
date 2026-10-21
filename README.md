@@ -1,7 +1,34 @@
 # Paint for Mac
 
+[![CI](https://github.com/osanchez25/mac-paint/actions/workflows/ci.yml/badge.svg)](https://github.com/osanchez25/mac-paint/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A Mac app that looks and works like Windows 11 Paint. Built with Tauri 2, React and
-Microsoft's Fluent UI (the same design kit Windows 11 uses).
+Microsoft's Fluent UI (the same design kit Windows 11 uses). Fast, small (about 5 MB)
+and offline.
+
+![Paint for Mac in light mode](docs/screenshots/light.png)
+
+| Dark mode with the Layers panel | Brushes | Save a smaller copy |
+| --- | --- | --- |
+| ![Dark mode with layers](docs/screenshots/dark.png) | ![Brushes gallery](docs/screenshots/brushes.png) | ![Save a smaller copy](docs/screenshots/save-smaller.png) |
+
+## Download
+
+Get the latest `.dmg` from [Releases](https://github.com/osanchez25/mac-paint/releases),
+open it and drag **Paint** to **Applications**. It needs macOS 14 or later on Apple
+silicon.
+
+The app is not signed with an Apple Developer ID, so macOS blocks it the first time.
+Open **System Settings → Privacy & Security** and click **Open Anyway**, or run:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/Paint.app
+```
+
+To get **Edit in Paint** in Finder's right-click menu, download
+`Edit-in-Paint-Quick-Action.zip` from the same release, unzip it and double-click the
+workflow to install it.
 
 ## What it does
 
@@ -40,7 +67,7 @@ Shortcuts are Paint's with Cmd instead of Ctrl (Cmd+Z, Cmd+Y, Cmd+A, Shift+Cmd+X
 crop, Cmd+E for properties). Resize and skew is Ctrl+W, because Cmd+W closes the window
 on a Mac.
 
-## Run and build
+## Build from source
 
 ```bash
 npm install
@@ -71,3 +98,25 @@ Building needs Rust (`brew install rust`) and the Xcode command line tools.
 
 Image Creator and Cocreator, rulers, TIFF saving, "Set as desktop background",
 and textured shape fills.
+
+## Contributing
+
+Issues and pull requests are welcome. The goal is simple: **look and work like Windows 11
+Paint**, so a change should match what Paint does (screenshots of Paint in an issue help a
+lot).
+
+- Keep logic out of React: drawing rules go in `src/editor/` or `src/core/`, screens in
+  `src/ui/`.
+- New pure logic in `src/core/` gets a unit test.
+- Before opening a pull request, run `npx tsc --noEmit` and `npm test` (CI runs both).
+- To publish a release, push a version tag (`git tag v0.2.0 && git push --tags`): the
+  Release workflow builds the `.dmg` on a Mac and attaches it.
+
+## License
+
+[MIT](LICENSE) © 2026 Oscar Sanchez.
+
+This is an independent project. It is not made by, endorsed by or affiliated with
+Microsoft. "Windows" and "Paint" are trademarks of Microsoft Corporation, used here
+only to describe what the app imitates. The app icon is original. The Fluent UI
+components and icons are Microsoft's open-source MIT-licensed libraries.

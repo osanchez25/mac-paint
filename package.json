@@ -2,6 +2,13 @@
   "name": "mac-paint",
   "private": true,
   "version": "0.1.0",
+  "description": "A Mac app that looks and works like Windows 11 Paint",
+  "license": "MIT",
+  "author": "Oscar Sanchez",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/osanchez25/mac-paint.git"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",

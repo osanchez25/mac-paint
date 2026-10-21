@@ -1,8 +1,10 @@
 [package]
 name = "mac-paint"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "A Mac app that looks and works like Windows 11 Paint"
+authors = ["Oscar Sanchez"]
+license = "MIT"
+repository = "https://github.com/osanchez25/mac-paint"
 edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
