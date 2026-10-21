@@ -19,6 +19,9 @@ case "$target" in
     build arm64 "$tmp/arm64"
     build x86_64 "$tmp/x86_64"
     lipo -create "$tmp/arm64" "$tmp/x86_64" -output "$out"
+    # Tauri compiles each chip on its own before joining them, and checks for a helper per chip too.
+    mv "$tmp/arm64" "$root/src-tauri/binaries/remove-bg-aarch64-apple-darwin"
+    mv "$tmp/x86_64" "$root/src-tauri/binaries/remove-bg-x86_64-apple-darwin"
     rm -rf "$tmp"
     ;;
   aarch64-apple-darwin) build arm64 "$out" ;;
